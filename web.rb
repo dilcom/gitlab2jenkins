@@ -27,6 +27,10 @@ get '/projects/:job_id' do
   haml :project, locals: { job: job, builds: job.builds_dataset.reverse_order(:created_at).limit(30).all }
 end
 
+get '/projects/:job_id/builds/:commit' do
+  call env.merge("PATH_INFO" => request.path_info.sub('/builds/', '/commits/'))
+end
+
 get '/projects/:job_id/commits/:commit' do
   job_id = params[:job_id].to_i
   commit = params[:commit]
@@ -50,12 +54,13 @@ get '/projects/:job_id/status.png' do
   job_id = params[:job_id].to_i
   job = $db.job[job_id]
   halt 404 if job.nil?
-
-  last_build = job.builds_dataset.reverse_order(:created_at).first(branch: ref)
+  
+  last_build = job.builds_dataset.where(["branch = ? or branch = ?", ref, "origin/" + ref ]).reverse_order(:created_at).first
+  
   status = last_build && last_build.status
-
   image = case status
     when "success"  then "success.png"
+    when "unstable" then "success.png"
     when "failed"   then "failed.png"
     when "canceled" then "failed.png"
     when "running"  then "running.png"
@@ -66,6 +71,10 @@ get '/projects/:job_id/status.png' do
 end
 
 # API calls
+
+get '/projects/:job_id/builds/:commit/status.json' do
+  call env.merge("PATH_INFO" => request.path_info.sub('/builds/', '/commits/'))
+end
 
 get '/projects/:job_id/commits/:commit/status.json' do
   job_id = params[:job_id].to_i

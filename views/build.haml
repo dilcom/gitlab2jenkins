@@ -19,6 +19,8 @@
       - case status
       - when "success"
         %span.label.label-success=status
+      - when "unstable"
+        %span.label.label-success=status
       - when "failed"
         %span.label.label-danger=status
       - when "canceled"

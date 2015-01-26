@@ -111,6 +111,7 @@ class JenkinsConnector
       nil
     else
       case api_string.downcase
+        when "unstable" then "success"
         when "success" then "success"
         when "aborted" then "canceled"
         when "running" then "running"
@@ -121,7 +122,7 @@ class JenkinsConnector
   end
 
   def final_status?(status)
-    ["success", "canceled", "failed"].include? status
+    ["success", "canceled", "failed", "unstable"].include? status
   end
 
 end
