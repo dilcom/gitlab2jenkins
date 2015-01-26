@@ -20,7 +20,7 @@ class BuildsDatabase
 
   def create_jobs_table
     @db.create_table(:jobs) do
-      column :id, :integer, :unsigned => true, :primary_key => true, :auto_increment => true
+      column :id, :serial, :primary_key => true
       column :name, :varchar, :length => 128, :null => false, :unique => true
       column :title, :varchar, :length => 128, :null => false
       column :token, :varchar, :length => 128, :null => false
@@ -30,8 +30,8 @@ class BuildsDatabase
 
   def create_builds_table
     @db.create_table(:builds) do
-      column :id, :integer, :unsigned => true, :primary_key => true, :auto_increment => true
-      foreign_key :job_id, :jobs, :type => :integer, :unsigned => true, :null => false, :on_delete => :restrict, :on_update => :cascade
+      column :id, :serial, :primary_key => true
+      foreign_key :job_id, :jobs, :type => :integer, :null => false, :on_delete => :restrict, :on_update => :cascade
       column :commit, :varchar, :length => 40, :null => false
       column :build, :integer, :null => true
       column :status, :varchar, :length => 128, :null => true
