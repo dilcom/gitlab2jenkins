@@ -5,7 +5,8 @@ else
 end
 
 gem 'jenkins_api_client'
-gem 'mysql2'
+gem 'pg'
+gem 'thin'
 gem 'sequel'
 gem 'sinatra'
 gem 'haml'
